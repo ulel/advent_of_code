@@ -15,13 +15,14 @@ def layer_size(layer):
     if layer == 0:
         return 1
 
-    return (layer*2-1)*4+4
+    return (layer*2)*4
 
 
 def layer_no(square):
     ''' layer_no(square)
 
-        Return the layer a square belongs to and the last number of that layer.
+        Return the layer a square belongs to and the size and last number of
+        that layer.
     '''
     layer = 0
     total = 0
