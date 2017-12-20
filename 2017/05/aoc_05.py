@@ -8,11 +8,11 @@ import math
 import aoc_05_input
 
 
-def execute(instructions, dec_limit = math.inf):
+def execute(instructions, dec_limit=math.inf):
     ''' execute(instructions)
 
-        Executes the given list of instructions and print the number of steps it
-        took to get out of the list.
+        Executes the given list of instructions and print the number of steps
+        it took to get out of the list.
 
         dec_limit is the limit for decreasing by 1 instead of incrementing,
         default is infinity.
@@ -20,18 +20,17 @@ def execute(instructions, dec_limit = math.inf):
     steps = 0
     index = 0
 
-    try:
-        while True:
-            old_index = index
+    while True:
+        old_index = index
+        try:
             index += instructions[index]
-            if instructions[old_index] >= dec_limit:
-                instructions[old_index] -= 1
-            else:
-                instructions[old_index] += 1
-            steps += 1
-
-    finally:
-        return steps
+        except IndexError:
+            return steps
+        if instructions[old_index] >= dec_limit:
+            instructions[old_index] -= 1
+        else:
+            instructions[old_index] += 1
+        steps += 1
 
 
 def main():
