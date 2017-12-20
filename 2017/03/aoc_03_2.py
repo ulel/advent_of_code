@@ -23,7 +23,7 @@ def generate_spiral(max_square):
         day 03 part 2.
     '''
 
-    current_spiral = {}
+    spiral = {}
 
     current_dir = (0, 1)
     cord = (0, 0)
@@ -32,10 +32,10 @@ def generate_spiral(max_square):
         if i > max_square:
             break
 
-        current_spiral[cord] = value(cord, current_spiral)
-        yield {'cord': cord, 'value': current_spiral[cord]}
+        spiral[cord] = value(cord, spiral)
+        yield {'cord': cord, 'value': spiral[cord]}
 
-        current_dir = get_direction(cord, current_dir, current_spiral)
+        current_dir = get_direction(cord, current_dir, spiral)
         cord = (cord[0] + current_dir[0], cord[1] + current_dir[1])
 
 
