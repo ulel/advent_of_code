@@ -57,8 +57,7 @@ def calc_total_weights(tree):
 def find_faulty_node(tree):
     ''' find_faulty_node(tree)
 
-        Find the node with the wrong weight and return what weight it should
-        have instead.
+        Find the node with the wrong weight.
     '''
 
     weight_count = collections.Counter([children['total'] for children
