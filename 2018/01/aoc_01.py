@@ -45,19 +45,67 @@ Here are other example situations:
 
 Starting with a frequency of zero, what is the resulting frequency after all of
 the changes in frequency have been applied?
+
+--- Part Two ---
+
+You notice that the device repeats the same frequency change list over and
+over. To calibrate the device, you need to find the first frequency it reaches
+twice.
+
+For example, using the same list of changes above, the device would loop as
+follows:
+
+    Current frequency  0, change of +1; resulting frequency  1.
+    Current frequency  1, change of -2; resulting frequency -1.
+    Current frequency -1, change of +3; resulting frequency  2.
+    Current frequency  2, change of +1; resulting frequency  3.
+    (At this point, the device continues from the start of the list.)
+    Current frequency  3, change of +1; resulting frequency  4.
+    Current frequency  4, change of -2; resulting frequency  2, which has
+        already been seen.
+
+In this example, the first frequency reached twice is 2. Note that your device
+might need to repeat its list of frequency changes many times before a
+duplicate frequency is found, and that duplicates might be found while in the
+middle of processing the list.
+
+Here are other examples:
+
+    +1, -1 first reaches 0 twice.
+    +3, +3, +4, -2, -4 first reaches 10 twice.
+    -6, +3, +8, +5, -6 first reaches 5 twice.
+    +7, +7, -2, -7, -4 first reaches 14 twice.
+
+What is the first frequency your device reaches twice?
 """
 import aoc_01_input
 
 
-def calibrate(frequence_changes):
+def calibrate(frequency_changes):
     """Calibrate according to the list of frequency changes."""
-    return sum(frequence_changes)
+    return sum(frequency_changes)
+
+
+def find_first_duplicate(frequency_changes):
+    """Return the first frequency reached twice with the given frequency changes."""
+    current = 0
+    previous_frequencies = {current: True}
+
+    for i in frequency_changes:
+        current += i
+        if current in previous_frequencies:
+            return current
+        else:
+            previous_frequencies[current] = True
 
 
 def main():
     """Print out the solution for part 1."""
     part_1 = calibrate(aoc_01_input.get_input())
     print(f"AoC 01 Part 1: {part_1}")
+
+    part_2 = find_first_duplicate(aoc_01_input.running_input())
+    print(f"AoC 01 Port 2: {part_2}")
 
 
 if __name__ == "__main__":
