@@ -89,14 +89,14 @@ def calibrate(frequency_changes):
 def find_first_duplicate(frequency_changes):
     """Return the first frequency reached twice with the given frequency changes."""
     current = 0
-    previous_frequencies = {current: True}
+    previous_frequencies = {current}
 
-    for i in frequency_changes:
-        current += i
+    for change in frequency_changes:
+        current += change
         if current in previous_frequencies:
             return current
         else:
-            previous_frequencies[current] = True
+            previous_frequencies.add(current)
 
 
 def main():
