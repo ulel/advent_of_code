@@ -44,9 +44,34 @@ and three of them contain a letter which appears exactly three times.
 Multiplying these together produces a checksum of 4 * 3 = 12.
 
 What is the checksum for your list of box IDs?
+
+
+--- Part Two ---
+
+Confident that your list of box IDs is complete, you're ready to find the boxes
+full of prototype fabric.
+
+The boxes will have IDs which differ by exactly one character at the same
+position in both strings. For example, given the following box IDs:
+
+abcde
+fghij
+klmno
+pqrst
+fguij
+axcye
+wvxyz
+
+The IDs abcde and axcye are close, but they differ by two characters (the
+second and fourth). However, the IDs fghij and fguij differ by exactly one
+character, the third (h and u). Those must be the correct boxes.
+
+What letters are common between the two correct box IDs? (In the example above,
+this is found by removing the differing character from either ID, producing fgij.)
 """
 
 import collections
+import itertools
 
 import aoc_02_input
 
@@ -79,10 +104,36 @@ def calculate_checksum(box_ids):
     return number_with_pairs * number_with_triplets
 
 
+def diff_by_one(box1, box2):
+    """Return if two box IDs diff by only one character."""
+    diff = 0
+    for (box_1_char, box_2_char) in zip(box1, box2):
+        if box_1_char != box_2_char:
+            diff += 1
+        if diff > 1:
+            return False
+    return diff == 1
+
+
+def get_prototype_boxes(box_ids):
+    """Return the two boxes that only differ on one character in the same position."""
+    for (box1, box2) in itertools.combinations(box_ids, 2):
+        if diff_by_one(box1, box2):
+            return (box1, box2)
+
+
+def get_common_letters(box1, box2):
+    """Return the common letters between two box ids."""
+    return "".join([char for (char, compare) in zip(box1, box2) if char == compare])
+
+
 def main():
     """Print out the answers to Advent of Code 2018 day 2."""
     part_1 = calculate_checksum(aoc_02_input.get_input())
     print(f"Advent of Code 2018 02 part 1: {part_1}")
+
+    part_2 = get_common_letters(*get_prototype_boxes(aoc_02_input.get_input()))
+    print(f"Advent of Code 2018 02 part 2: {part_2}")
 
 
 if __name__ == "__main__":
