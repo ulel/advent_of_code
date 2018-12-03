@@ -60,6 +60,14 @@ while adjacent to the others, does not overlap either of them.)
 
 If the Elves all proceed with their own plans, none of them will have enough
 fabric. How many square inches of fabric are within two or more claims?
+
+--- Part Two ---
+
+Amidst the chaos, you notice that exactly one claim doesn't overlap by even a single square inch of fabric with any other claim. If you can somehow draw attention to it, maybe the Elves will be able to make Santa's suit after all!
+
+For example, in the claims above, only claim 3 is intact after all claims are made.
+
+What is the ID of the only claim that doesn't overlap?
 """
 
 import collections
@@ -68,24 +76,49 @@ import itertools
 import aoc_03_input
 
 Claim = collections.namedtuple("Claim", "id x y width height")
+Square = collections.namedtuple("Square", "claim_ids number_of_claims")
 
 
-def number_of_overlapping_squares(claims):
-    squares = {}
+def calculate_overlapping_squares(claims):
+    squares = dict()
+    last_overlapped = False
+    non_overlapping = set()
+
     for claim in claims:
+        last_overlapped = False
         for coordinate in itertools.product(
             range(claim.x, claim.x + claim.width),
             range(claim.y, claim.y + claim.height),
         ):
-            squares[coordinate] = squares.get(coordinate, 0) + 1
+            square = squares.get(coordinate, Square(claim_ids=[], number_of_claims=0))
 
-    return sum([1 for number_of_claims in squares.values() if number_of_claims > 1])
+            for claim_id in square.claim_ids:
+                non_overlapping.discard(claim_id)
+
+            if square.number_of_claims > 0:
+                last_overlapped = True
+
+            square.claim_ids.append(claim.id)
+
+            squares[coordinate] = Square(
+                claim_ids=square.claim_ids, number_of_claims=square.number_of_claims + 1
+            )
+
+        if not last_overlapped:
+            non_overlapping.add(claim.id)
+
+    overlapping_inches = sum(
+        [1 for square in squares.values() if square.number_of_claims > 1]
+    )
+
+    return (non_overlapping.pop(), overlapping_inches)
 
 
 def main():
-    part_1 = number_of_overlapping_squares(aoc_03_input.get_input())
+    (part_2, part_1) = calculate_overlapping_squares(aoc_03_input.get_input())
 
     print(f"Advent of Code 2018 day 3 part 1: {part_1}")
+    print(f"Advent of Code 2018 day 3 part 2: {part_2}")
 
 
 if __name__ == "__main__":

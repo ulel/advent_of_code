@@ -1,17 +1,22 @@
+import pytest
+
 import aoc_03
 
 
-def test_number_of_overlapping_squares():
+@pytest.fixture
+def claims():
     """
     The problem is that many of the claims overlap, causing two or more claims to
     cover part of the same areas. For example, consider the following claims:
     """
-    claims = [
+    return [
         aoc_03.Claim(id=1, x=1, y=3, width=4, height=4),
         aoc_03.Claim(id=2, x=3, y=1, width=4, height=4),
         aoc_03.Claim(id=3, x=5, y=5, width=2, height=2),
     ]
 
+
+def test_calculate_overlapping_squares(claims):
     """
     Visually, these claim the following areas:
 
@@ -28,4 +33,9 @@ def test_number_of_overlapping_squares():
     while adjacent to the others, does not overlap either of them.)
     """
 
-    assert aoc_03.number_of_overlapping_squares(claims) == 4
+    (
+        non_overlapping,
+        number_of_overlapping_squares,
+    ) = aoc_03.calculate_overlapping_squares(claims)
+    assert non_overlapping == 3
+    assert number_of_overlapping_squares == 4
