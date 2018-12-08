@@ -40,33 +40,54 @@ def wall_writings():
     ]
 
 
+def test_number_of_nights_per_minute(observations, no_nights_per_minute_guard_10):
+    assert (
+        aoc_04.number_of_nights_per_minute([(5, 25), (30, 55), (24, 29)])
+        == no_nights_per_minute_guard_10
+    )
+
+
 @pytest.fixture
-def observations():
-    return {
-        10: {"total": 50, "sleep_pattern": [(5, 25), (30, 55), (24, 29)]},
-        99: {"total": 30, "sleep_pattern": [(40, 50), (36, 46), (45, 55)]},
-    }
-
-
-def test_find_the_sleepiest(wall_writings, observations):
-    assert aoc_04.find_the_sleepiest(wall_writings) == (10, observations[10])
-
-
-def test_number_of_nights_per_minute(observations):
+def no_nights_per_minute_guard_10():
     five_to_twentyfour = [(minute, 1) for minute in range(5, 24)]
     thirty_to_fiftyfive = [(minute, 1) for minute in range(30, 55)]
     twentyfour = [(24, 2)]
     twentyfive_to_twentynine = [(minute, 1) for minute in range(25, 29)]
-    expected = dict(
+    return dict(
         five_to_twentyfour + thirty_to_fiftyfive + twentyfour + twentyfive_to_twentynine
     )
-    assert (
-        aoc_04.number_of_nights_per_minute(observations[10]["sleep_pattern"])
-        == expected
+
+
+@pytest.fixture
+def no_nights_per_minute_guard_99():
+    thirtysix_to_forty = [(minute, 1) for minute in range(36, 40)]
+    forty_to_fortyfive = [(minute, 2) for minute in range(40, 45)]
+    fortyfive = [(45, 3)]
+    fortysix_to_fifty = [(minute, 2) for minute in range(46, 50)]
+    fifty_to_fiftyfive = [(minute, 1) for minute in range(50, 55)]
+    return dict(
+        thirtysix_to_forty
+        + forty_to_fortyfive
+        + fortyfive
+        + fortysix_to_fifty
+        + fifty_to_fiftyfive
     )
+
+
+@pytest.fixture
+def observations(no_nights_per_minute_guard_10, no_nights_per_minute_guard_99):
+    return {
+        10: {"total": 50, "sleep_pattern": no_nights_per_minute_guard_10},
+        99: {"total": 30, "sleep_pattern": no_nights_per_minute_guard_99},
+    }
+
+
+def test_calculate_sleep_patterns(wall_writings, observations):
+    expected = {"sleepiest": 10, "sleep_patterns": observations}
+
+    result = aoc_04.calculate_sleep_patterns(wall_writings)
+    assert result == expected
 
 
 def test_strategy_1(observations):
-    expected = 240
-
-    assert aoc_04.strategy_1((10, observations[10])) == 240
+    assert aoc_04.strategy_1({"sleepiest": 10, "sleep_patterns": observations}) == 240

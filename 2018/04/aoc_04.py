@@ -80,6 +80,19 @@ analyzed.
 
 What is the ID of the guard you chose multiplied by the minute you chose? (In
 the above example, the answer would be 10 * 24 = 240.)
+
+
+--- Part Two ---
+
+Strategy 2: Of all guards, which guard is most frequently asleep on the same
+    minute?
+
+In the example above, Guard #99 spent minute 45 asleep more than any other
+guard or minute - three times in total. (In all other cases, any guard spent
+any minute asleep at most twice.)
+
+What is the ID of the guard you chose multiplied by the minute you chose? (In
+the above example, the answer would be 99 * 45 = 4455.)
 """
 import collections
 
@@ -110,11 +123,13 @@ def parse_wall_writings(wall_writings):
         yield parse_writing(writing)
 
 
-def find_the_sleepiest(wall_writings):
-    sleep_patterns = collections.defaultdict(lambda: {"total": 0, "sleep_pattern": []})
+def calculate_sleep_patterns(wall_writings):
+    sleep_patterns = collections.defaultdict(
+        lambda: {"total": 0, "sleep_pattern": collections.defaultdict(lambda: 0)}
+    )
     current_guard = None
     fall_asleep = None
-    sleepiest = (None, 0)
+    sleepiest = None
 
     for observation in sorted(parse_wall_writings(wall_writings)):
         if observation[5] == "start":
@@ -129,22 +144,27 @@ def find_the_sleepiest(wall_writings):
                 )
                 sleep_patterns[current_guard]["total"] = new_total
 
-                if new_total > sleep_patterns[sleepiest[0]]["total"]:
-                    sleepiest = (current_guard, new_total)
+                if not sleepiest:
+                    sleepiest = current_guard
+                elif new_total > sleep_patterns[sleepiest]["total"]:
+                    sleepiest = current_guard
 
-                sleep_patterns[current_guard]["sleep_pattern"].append(
-                    (fall_asleep, observation[4])
+                sleep_patterns[current_guard][
+                    "sleep_pattern"
+                ] = number_of_nights_per_minute(
+                    [(fall_asleep, wake_up)],
+                    nights_per_minute=sleep_patterns[current_guard]["sleep_pattern"],
                 )
-
                 fall_asleep = None
             else:
                 fall_asleep = observation[4]
 
-    return (sleepiest[0], sleep_patterns[sleepiest[0]])
+    return {"sleepiest": sleepiest, "sleep_patterns": sleep_patterns}
 
 
-def number_of_nights_per_minute(sleep_pattern):
-    nights_per_minute = collections.defaultdict(lambda: 0)
+def number_of_nights_per_minute(sleep_pattern, nights_per_minute=None):
+    if not nights_per_minute:
+        nights_per_minute = collections.defaultdict(lambda: 0)
 
     for (start, end) in sleep_pattern:
         for minute in range(start, end):
@@ -153,15 +173,19 @@ def number_of_nights_per_minute(sleep_pattern):
     return nights_per_minute
 
 
-def strategy_1(sleepiest):
-    nights_per_minute = number_of_nights_per_minute(sleepiest[1]["sleep_pattern"])
-    most_frequent_hour = max(nights_per_minute.items(), key=lambda minute: minute[1])
+def strategy_1(sleep_patterns):
+    sleepiest = sleep_patterns["sleepiest"]
+    most_frequent_hour = max(
+        sleep_patterns["sleep_patterns"][sleepiest]["sleep_pattern"].items(),
+        key=lambda minute: minute[1],
+    )
 
-    return most_frequent_hour[0] * sleepiest[0]
+    return most_frequent_hour[0] * sleepiest
 
 
 def main():
-    part_1 = strategy_1(find_the_sleepiest(aoc_04_input.get_input()))
+    sleep_patterns = calculate_sleep_patterns(aoc_04_input.get_input())
+    part_1 = strategy_1(sleep_patterns)
 
     print(f"Advent of Code 2018 04 part 1: {part_1}")
 
