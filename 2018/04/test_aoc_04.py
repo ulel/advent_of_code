@@ -91,3 +91,7 @@ def test_calculate_sleep_patterns(wall_writings, observations):
 
 def test_strategy_1(observations):
     assert aoc_04.strategy_1({"sleepiest": 10, "sleep_patterns": observations}) == 240
+
+
+def test_strategy_1(observations):
+    assert aoc_04.strategy_2({"sleepiest": 10, "sleep_patterns": observations}) == 4455

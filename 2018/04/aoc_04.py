@@ -173,14 +173,31 @@ def number_of_nights_per_minute(sleep_pattern, nights_per_minute=None):
     return nights_per_minute
 
 
+def get_most_frequent_minute(sleep_pattern):
+    return max(sleep_pattern.items(), key=lambda minute: minute[1])
+
+
 def strategy_1(sleep_patterns):
     sleepiest = sleep_patterns["sleepiest"]
-    most_frequent_hour = max(
-        sleep_patterns["sleep_patterns"][sleepiest]["sleep_pattern"].items(),
-        key=lambda minute: minute[1],
-    )
+    sleepiest_sleep_pattern = sleep_patterns["sleep_patterns"][sleepiest][
+        "sleep_pattern"
+    ]
+    return get_most_frequent_minute(sleepiest_sleep_pattern)[0] * sleepiest
 
-    return most_frequent_hour[0] * sleepiest
+
+def strategy_2(sleep_patterns):
+    most_predictable_guard = None
+    most_predictable_minute = None
+    most_predictable_frequency = 0
+
+    for (guard, sleep_pattern) in sleep_patterns["sleep_patterns"].items():
+        (minute, frequency) = get_most_frequent_minute(sleep_pattern["sleep_pattern"])
+        if frequency > most_predictable_frequency:
+            most_predictable_guard = guard
+            most_predictable_minute = minute
+            most_predictable_frequency = frequency
+
+    return most_predictable_guard * most_predictable_minute
 
 
 def main():
@@ -188,6 +205,9 @@ def main():
     part_1 = strategy_1(sleep_patterns)
 
     print(f"Advent of Code 2018 04 part 1: {part_1}")
+
+    part_2 = strategy_2(sleep_patterns)
+    print(f"Advent of Code 2018 04 part 2: {part_2}")
 
 
 if __name__ == "__main__":
