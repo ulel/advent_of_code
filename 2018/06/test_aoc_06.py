@@ -23,4 +23,4 @@ def test_max_x_and_y():
 
 
 def test_size_of_largest_area():
-    assert aoc_06.size_of_largest_area(LOCATIONS_IN_EXAMPLE) == 17
+    assert aoc_06.size_of_largest_area(LOCATIONS_IN_EXAMPLE, max_range=32) == (17, 16)
