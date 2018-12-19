@@ -30,7 +30,7 @@ def test_parse_step(step_line, expected):
     assert aoc_07_input._parse_step(step_line) == expected
 
 
-def test_get_order():
+def test_get_order_single_worker():
     """
     Visually, these requirements look like this:
 
@@ -57,5 +57,19 @@ def test_get_order():
 
     So, in this example, the correct order is CABDFE.
     """
+    actual_order, actual_time = aoc_07.get_order(parsed_steps)
 
-    assert aoc_07.get_order(parsed_steps) == ["C", "A", "B", "D", "F", "E"]
+    assert actual_order == ["C", "A", "B", "D", "F", "E"]
+    assert actual_time == 3 + 1 + 2 + 4 + 6 + 5
+
+
+def test_get_order_two_workers():
+    expected_order = ["C", "A", "B", "F", "D", "E"]
+    expected_time = 15
+
+    actual_order, actual_time = aoc_07.get_order(
+        parsed_steps, number_of_workers=2, extra_time=0
+    )
+
+    assert actual_time == expected_time
+    assert actual_order == expected_order

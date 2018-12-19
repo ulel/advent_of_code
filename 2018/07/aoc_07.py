@@ -62,14 +62,63 @@ alphabetically. In this example, the steps would be completed as follows:
 So, in this example, the correct order is CABDFE.
 
 In what order should the steps in your instructions be completed?
+
+--- Part Two ---
+
+As you're about to begin construction, four of the Elves offer to help. "The
+sun will set soon; it'll go faster if we work together." Now, you need to
+account for multiple people working on steps simultaneously. If multiple steps
+are available, workers should still begin them in alphabetical order.
+
+Each step takes 60 seconds plus an amount corresponding to its letter: A=1,
+B=2, C=3, and so on. So, step A takes 60+1=61 seconds, while step Z takes
+60+26=86 seconds. No time is required between steps.
+
+To simplify things for the example, however, suppose you only have help from
+one Elf (a total of two workers) and that each step takes 60 fewer seconds (so
+that step A takes 1 second and step Z takes 26 seconds). Then, using the same
+instructions as above, this is how each second would be spent:
+
+Second   Worker 1   Worker 2   Done
+   0        C          .        
+   1        C          .        
+   2        C          .        
+   3        A          F       C
+   4        B          F       CA
+   5        B          F       CA
+   6        D          F       CAB
+   7        D          F       CAB
+   8        D          F       CAB
+   9        D          .       CABF
+  10        E          .       CABFD
+  11        E          .       CABFD
+  12        E          .       CABFD
+  13        E          .       CABFD
+  14        E          .       CABFD
+  15        .          .       CABFDE
+
+Each row represents one second of time. The Second column identifies how many
+seconds have passed as of the beginning of that second. Each worker column
+shows the step that worker is currently doing (or . if they are idle). The Done
+column shows completed steps.
+
+Note that the order of the steps has changed; this is because steps now take
+time to finish and multiple workers can begin multiple steps simultaneously.
+
+In this example, it would take 15 seconds for two workers to complete these
+steps.
+
+With 5 workers and the 60+ second step durations described above, how long will
+it take to complete all of the steps?
 """
 
 import collections
+import operator
 
 import aoc_07_input
 
 
-def get_order(dependencies):
+def get_order(dependencies, number_of_workers=1, extra_time=0):
     """Return a list with the order the steps will be executed."""
     all_nodes = collections.defaultdict(
         lambda: {"dependencies": set(), "prerequisites": set()}
@@ -86,24 +135,46 @@ def get_order(dependencies):
     ]
 
     order = []
+    current_jobs = []
 
-    while available_steps:
+    current_time = 0
+
+    while available_steps or current_jobs:
         available_steps.sort()
-        next_step = available_steps[0]
-        order.append(next_step)
-        available_steps = available_steps[1:]
-        for step in all_nodes[next_step]["dependencies"]:
-            all_nodes[step]["prerequisites"].discard(next_step)
+
+        while len(current_jobs) < number_of_workers and available_steps:
+            next_step = available_steps[0]
+            current_jobs.append(
+                {"step": next_step, "time_left": extra_time + ord(next_step) - 64}
+            )
+            available_steps = available_steps[1:]
+
+        current_jobs.sort(key=operator.itemgetter("time_left"))
+
+        next_finished = current_jobs[0]
+        order.append(next_finished["step"])
+        current_jobs = current_jobs[1:]
+        time_passed = next_finished["time_left"]
+        current_time += time_passed
+
+        for job in current_jobs:
+            job["time_left"] -= time_passed
+
+        for step in all_nodes[next_finished["step"]]["dependencies"]:
+            all_nodes[step]["prerequisites"].discard(next_finished["step"])
             if step not in available_steps and not all_nodes[step]["prerequisites"]:
                 available_steps.append(step)
+        del all_nodes[next_finished["step"]]
 
-    return order
+    return order, current_time
 
 
 def main():
-    part_1 = "".join(get_order(aoc_07_input.get_input()))
+    part_1, _ = get_order(aoc_07_input.get_input())
+    _, part_2 = get_order(aoc_07_input.get_input(), number_of_workers=5, extra_time=60)
 
-    print(f"Advent of Code 2018 day 7 part 1: {part_1}.")
+    print(f"Advent of Code 2018 day 7 part 1: {''.join(part_1)}.")
+    print(f"Advent of Code 2028 day 7 part 2: {part_2}.")
 
 
 if __name__ == "__main__":
