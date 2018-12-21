@@ -1,6 +1,6 @@
-import aoc_08
-
 import pytest
+
+import aoc_08
 
 """
 2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2
@@ -26,25 +26,25 @@ def example_input():
     return [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2]
 
 
-def test_calculate_sum_no_child_no_metadata():
+def test_calculate_sum_and_value_no_child_no_metadata():
     node_input = [0, 0]
-    expected = (0, [])
-    assert aoc_08.calculate_sum(node_input) == expected
+    expected = (0, 0, [])
+    assert aoc_08.calculate_sum_and_value(node_input) == expected
 
 
-def test_calculate_sum_no_child_with_metadata():
+def test_calculate_sum_and_value_no_child_with_metadata():
     node_input = [0, 3, 1, 2, 3]
-    expected = (6, [])
-    assert aoc_08.calculate_sum(node_input) == expected
+    expected = (6, 6, [])
+    assert aoc_08.calculate_sum_and_value(node_input) == expected
 
 
-def test_calculate_sum_one_child_no_metadata():
+def test_calculate_sum_and_value_one_child_no_metadata():
     node_input = [1, 0, 0, 0]
-    expected = (0, [])
-    assert aoc_08.calculate_sum(node_input) == expected
+    expected = (0, 0, [])
+    assert aoc_08.calculate_sum_and_value(node_input) == expected
 
 
-def test_calculate_sum(example_input):
-    expected = (138, [])
+def test_calculate_sum_and_value(example_input):
+    expected = (138, 66, [])
 
-    assert aoc_08.calculate_sum(example_input) == expected
+    assert aoc_08.calculate_sum_and_value(example_input) == expected
