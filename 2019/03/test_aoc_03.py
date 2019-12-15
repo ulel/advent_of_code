@@ -76,35 +76,45 @@ def test_manhattan_distance(point1, point2, expected_distance):
 def test_trace_cable_one_move():
     assert aoc_03.trace_cable(0, [(0, 3)], tiles={}) == (
         None,
-        {(0, 0): 0, (0, 1): 0, (0, 2): 0, (0, 3): 0,},
+        {(0, 0): (0, 0), (0, 1): (0, 1), (0, 2): (0, 2), (0, 3): (0, 3),},
+        None,
     )
 
 
 def test_trace_cable_multiple_moves():
     assert aoc_03.trace_cable(0, [(0, 3), (-2, 0)], tiles={}) == (
         None,
-        {(0, 0): 0, (0, 1): 0, (0, 2): 0, (0, 3): 0, (-1, 3): 0, (-2, 3): 0,},
+        {
+            (0, 0): (0, 0),
+            (0, 1): (0, 1),
+            (0, 2): (0, 2),
+            (0, 3): (0, 3),
+            (-1, 3): (0, 4),
+            (-2, 3): (0, 5),
+        },
+        None,
     )
 
 
 def test_trace_cable_multiple_moves():
     orig_tiles = {
-        (0, 0): 0,
-        (0, 1): 0,
-        (0, 2): 0,
-        (0, 3): 0,
-        (-1, 3): 0,
-        (-2, 3): 0,
+        (0, 0): (0, 0),
+        (0, 1): (0, 1),
+        (0, 2): (0, 2),
+        (0, 3): (0, 3),
+        (-1, 3): (0, 4),
+        (-2, 3): (0, 5),
     }
 
     expected_tiles = copy.deepcopy(orig_tiles)
-    expected_tiles[(0, 0)] = -1
-    expected_tiles[(-1, 0)] = 1
-    expected_tiles[(-1, 1)] = 1
-    expected_tiles[(0, 1)] = -1
-    expected_tiles[(1, 1)] = 1
+    expected_tiles[(0, 0)] = (-1, 0)
+    expected_tiles[(-1, 0)] = (1, 1)
+    expected_tiles[(-1, 1)] = (1, 2)
+    expected_tiles[(0, 1)] = (-1, 4)
+    expected_tiles[(1, 1)] = (1, 4)
 
     assert aoc_03.trace_cable(1, [(-1, 0), (0, 1), (2, 0)], tiles=orig_tiles) == (
         (0, 1),
         expected_tiles,
+        4,
     )
