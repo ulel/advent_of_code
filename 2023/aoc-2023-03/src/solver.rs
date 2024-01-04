@@ -79,15 +79,7 @@
 //
 // What is the sum of all of the gear ratios in your engine schematic?
 
-use colored::*;
-
-fn main() {
-    let input = include_str!("../resources/input");
-    let (part_1, part_2) = part_1(input);
-
-    println!("part 1: {}", part_1.to_string().white().on_black());
-    println!("part 2: {}", part_2.to_string().white().on_black());
-}
+// use colored::*;
 
 struct Schematic {
     height: usize,
@@ -191,7 +183,7 @@ fn get_gear_ratio(x: usize, y: usize, schematic_map: &Schematic) -> u32 {
     0
 }
 
-fn part_1(schematic: &str) -> (u32, u32) {
+pub fn part_1(schematic: &str) -> (u32, u32) {
     let schematic_map = parse_schematic(schematic);
 
     let mut in_number = false;
@@ -213,46 +205,47 @@ fn part_1(schematic: &str) -> (u32, u32) {
                     let current_number = potential_part_number.parse::<u32>().unwrap();
                     if current_is_part_number {
                         sum += current_number;
-                        print!("{}", current_number.to_string().white().on_red());
-                    } else {
-                        print!("{}", current_number.to_string().white());
-                    }
+                        // print!("{}", current_number.to_string().white().on_red());
+                    } // else {
+                      // print!("{}", current_number.to_string().white());
+                      // }
                     in_number = false;
                     potential_part_number = "".to_string();
                     current_is_part_number = false;
                 }
 
-                if character == &'.' {
-                    print!("{}", ".".bright_black());
-                } else if character == &'*' {
+                // if character == &'.' {
+                // print!("{}", ".".bright_black());
+                // } else
+                if character == &'*' {
                     let gear_ratio = get_gear_ratio(x, y, &schematic_map);
                     sum_gear_ratio += gear_ratio;
 
-                    if gear_ratio == 0 {
-                        print!("{}", "*".white().on_green());
-                    } else {
-                        print!("{}", "*".white().on_blue());
-                    }
-                } else {
-                    print!("{}", character.to_string().red().on_yellow());
-                }
+                    // if gear_ratio == 0 {
+                    //     print!("{}", "*".white().on_green());
+                    // } else {
+                    //     print!("{}", "*".white().on_blue());
+                    // }
+                } // else {
+                  // print!("{}", character.to_string().red().on_yellow());
+                  // }
             }
         }
         if in_number {
             let current_number = potential_part_number.parse::<u32>().unwrap();
             if current_is_part_number {
                 sum += current_number;
-                print!("{}", current_number.to_string().blue().on_red());
-            } else {
-                print!("{}", current_number.to_string().green());
-            }
+                // print!("{}", current_number.to_string().blue().on_red());
+            } // else {
+              // print!("{}", current_number.to_string().green());
+              // }
             current_is_part_number = false;
         }
 
         in_number = false;
         potential_part_number = "".to_string();
 
-        println!();
+        // println!();
     }
     (sum, sum_gear_ratio)
 }
