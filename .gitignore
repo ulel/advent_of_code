@@ -6,3 +6,5 @@ __pycache__
 Cargo.lock
 target
 .mutmut-cache
+input
+dhat-heap.json
